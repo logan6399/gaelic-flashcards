@@ -102,16 +102,13 @@
         .card-container {
             perspective: 1000px;
             margin-bottom: 30px;
-            height: 320px;
-            position: relative;
+            height: 300px;
         }
 
         .card {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s;
             cursor: pointer;
@@ -155,7 +152,6 @@
                 linear-gradient(135deg, #2d5016 0%, #6b4c9a 100%);
             background-blend-mode: multiply;
             color: #f5f1e8;
-            position: relative;
         }
 
         .card-front::before {
@@ -171,7 +167,6 @@
             background: linear-gradient(135deg, #6b4c9a 0%, #d4af37 100%);
             color: #f5f1e8;
             transform: rotateY(180deg);
-            position: relative;
         }
 
         .card-back::before {
@@ -467,9 +462,8 @@
     </div>
 
     <script>
-        // Vocabulary database
+        // Vocabulary database - 500+ words
         const VOCABULARY = [
-            // Greetings & Common Phrases
             { gaelic: "Halò", english: "Hello" },
             { gaelic: "Tapadh leat", english: "Thank you" },
             { gaelic: "Madainn mhath", english: "Good morning" },
@@ -488,8 +482,6 @@
             { gaelic: "Tha mi sgìth", english: "I'm tired" },
             { gaelic: "Tha an t-acras orm", english: "I'm hungry" },
             { gaelic: "Tha am pathadh orm", english: "I'm thirsty" },
-            
-            // Food & Drink
             { gaelic: "Uisge", english: "Water" },
             { gaelic: "Bainne", english: "Milk" },
             { gaelic: "Aran", english: "Bread" },
@@ -510,8 +502,6 @@
             { gaelic: "Ugh", english: "Egg" },
             { gaelic: "Feòil-mart", english: "Beef" },
             { gaelic: "Muic-fheòil", english: "Pork" },
-            
-            // Animals
             { gaelic: "Cù", english: "Dog" },
             { gaelic: "Cat", english: "Cat" },
             { gaelic: "Each", english: "Horse" },
@@ -531,8 +521,6 @@
             { gaelic: "Nathair", english: "Snake" },
             { gaelic: "Iolaire", english: "Eagle" },
             { gaelic: "Fitheach", english: "Raven" },
-            
-            // Family
             { gaelic: "Màthair", english: "Mother" },
             { gaelic: "Athair", english: "Father" },
             { gaelic: "Bràthair", english: "Brother" },
@@ -543,8 +531,6 @@
             { gaelic: "Seanair", english: "Grandfather" },
             { gaelic: "Teaghlach", english: "Family" },
             { gaelic: "Pàrantan", english: "Parents" },
-            
-            // House & Home
             { gaelic: "Taigh", english: "House" },
             { gaelic: "Seòmar", english: "Room" },
             { gaelic: "Doras", english: "Door" },
@@ -558,8 +544,6 @@
             { gaelic: "Mullach", english: "Roof" },
             { gaelic: "Làr", english: "Floor" },
             { gaelic: "Balla", english: "Wall" },
-            
-            // Colors
             { gaelic: "Dearg", english: "Red" },
             { gaelic: "Gorm", english: "Blue" },
             { gaelic: "Uaine", english: "Green" },
@@ -571,8 +555,6 @@
             { gaelic: "Orainds", english: "Orange" },
             { gaelic: "Purpaidh", english: "Purple" },
             { gaelic: "Pinc", english: "Pink" },
-            
-            // Numbers
             { gaelic: "Aon", english: "One" },
             { gaelic: "Dhà", english: "Two" },
             { gaelic: "Trì", english: "Three" },
@@ -586,8 +568,6 @@
             { gaelic: "Fichead", english: "Twenty" },
             { gaelic: "Ceud", english: "Hundred" },
             { gaelic: "Mìle", english: "Thousand" },
-            
-            // Days & Time
             { gaelic: "Latha", english: "Day" },
             { gaelic: "Oidhche", english: "Night" },
             { gaelic: "Madainn", english: "Morning" },
@@ -602,8 +582,6 @@
             { gaelic: "Dihaoine", english: "Friday" },
             { gaelic: "Disathairne", english: "Saturday" },
             { gaelic: "Didòmhnaich", english: "Sunday" },
-            
-            // Weather & Nature
             { gaelic: "Grìan", english: "Sun" },
             { gaelic: "Gealach", english: "Moon" },
             { gaelic: "Reul", english: "Star" },
@@ -627,8 +605,6 @@
             { gaelic: "Cnoc", english: "Hill" },
             { gaelic: "Gleann", english: "Glen / Valley" },
             { gaelic: "Creag", english: "Rock / Cliff" },
-            
-            // Body Parts
             { gaelic: "Ceann", english: "Head" },
             { gaelic: "Sùil", english: "Eye" },
             { gaelic: "Cluas", english: "Ear" },
@@ -642,8 +618,6 @@
             { gaelic: "Druim", english: "Back" },
             { gaelic: "Amhach", english: "Neck" },
             { gaelic: "Corrag", english: "Finger" },
-            
-            // Adjectives
             { gaelic: "Mòr", english: "Big / Great" },
             { gaelic: "Beag", english: "Small" },
             { gaelic: "Àrd", english: "High / Tall" },
@@ -672,8 +646,6 @@
             { gaelic: "Goirid", english: "Short" },
             { gaelic: "Glan", english: "Clean" },
             { gaelic: "Salach", english: "Dirty" },
-            
-            // Verbs
             { gaelic: "Bi", english: "Be" },
             { gaelic: "Dèan", english: "Do / Make" },
             { gaelic: "Thig", english: "Come" },
@@ -702,8 +674,6 @@
             { gaelic: "Ionnsaich", english: "Learn" },
             { gaelic: "Teagaisg", english: "Teach" },
             { gaelic: "Cuimhnich", english: "Remember" },
-            
-            // Places
             { gaelic: "Baile", english: "Town / Village" },
             { gaelic: "Dùthaich", english: "Country" },
             { gaelic: "Eilean", english: "Island" },
@@ -718,8 +688,6 @@
             { gaelic: "Rathad", english: "Road" },
             { gaelic: "Sràid", english: "Street" },
             { gaelic: "Drochaid", english: "Bridge" },
-            
-            // Clothing
             { gaelic: "Aodach", english: "Clothes" },
             { gaelic: "Lèine", english: "Shirt" },
             { gaelic: "Briogais", english: "Trousers" },
@@ -728,8 +696,6 @@
             { gaelic: "Brògan", english: "Shoes" },
             { gaelic: "Stocainnean", english: "Socks" },
             { gaelic: "Fèileadh", english: "Kilt" },
-            
-            // Objects
             { gaelic: "Leabhar", english: "Book" },
             { gaelic: "Peann", english: "Pen" },
             { gaelic: "Pàipear", english: "Paper" },
@@ -744,8 +710,6 @@
             { gaelic: "Spàin", english: "Spoon" },
             { gaelic: "Sgian", english: "Knife" },
             { gaelic: "Forc", english: "Fork" },
-            
-            // Culture & Music
             { gaelic: "Ceòl", english: "Music" },
             { gaelic: "Òran", english: "Song" },
             { gaelic: "Pìob", english: "Pipe / Bagpipe" },
@@ -755,8 +719,6 @@
             { gaelic: "Facal", english: "Word" },
             { gaelic: "Cànan", english: "Language" },
             { gaelic: "Cèilidh", english: "Social gathering" },
-            
-            // Abstract Concepts
             { gaelic: "Gaol", english: "Love" },
             { gaelic: "Fuath", english: "Hate" },
             { gaelic: "Beatha", english: "Life" },
@@ -779,8 +741,6 @@
             { gaelic: "Onair", english: "Honor" },
             { gaelic: "Nàire", english: "Shame" },
             { gaelic: "Urram", english: "Respect / Honor" },
-            
-            // Questions & Common Words
             { gaelic: "Dè?", english: "What?" },
             { gaelic: "Cò?", english: "Who?" },
             { gaelic: "Càit?", english: "Where?" },
@@ -796,8 +756,6 @@
             { gaelic: "Gu", english: "To" },
             { gaelic: "Bho", english: "From" },
             { gaelic: "Mu", english: "About" },
-            
-            // More Phrases
             { gaelic: "Tha mi a' tuigsinn", english: "I understand" },
             { gaelic: "Chan eil mi a' tuigsinn", english: "I don't understand" },
             { gaelic: "Bruidhinn nas slaodaiche", english: "Speak slower" },
@@ -819,8 +777,6 @@
             { gaelic: "Tha mi trang", english: "I'm busy" },
             { gaelic: "Tha gaol agam ort", english: "I love you" },
             { gaelic: "Chan eil dad", english: "Nothing" },
-            
-            // More Vocabulary
             { gaelic: "Duine", english: "Person / Man" },
             { gaelic: "Boireannach", english: "Woman" },
             { gaelic: "Balach", english: "Boy" },
@@ -1173,5 +1129,8 @@
         // Initialize the app when the page loads
         app.init();
     </script>
+</body>
+</html>
+
 </body>
 </html>
