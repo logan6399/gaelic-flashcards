@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scottish Gaelic Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    #2d5016,
+                    #2d5016 10px,
+                    #3d6b1f 10px,
+                    #3d6b1f 20px,
+                    #1a3d0a 20px,
+                    #1a3d0a 30px,
+                    #2d5016 30px,
+                    #2d5016 40px
+                ),
+                linear-gradient(135deg, #1a3d0a 0%, #2d5016 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: linear-gradient(to bottom, #f5f1e8 0%, #ede5d8 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+            max-width: 600px;
+            width: 100%;
+            border: 3px solid #d4af37;
+            position: relative;
+        }
+
+        .container::before {
+            content: '🏴󠁧󠁢󠁳󠁣󠁴󠁿';
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        h1 {
+            color: #2d5016;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b4c9a;
+            margin-bottom: 30px;
+            font-size: 1em;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(109, 76, 154, 0.1) 0%, rgba(45, 80, 22, 0.1) 100%);
+            border-radius: 10px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #6b4c9a;
+            text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #3d6b1f;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 30px;
+            height: 320px;
+            position: relative;
+            display: block;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 3px solid #d4af37;
+        }
+
+        .card-front {
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    #2d5016,
+                    #2d5016 15px,
+                    #3d6b1f 15px,
+                    #3d6b1f 30px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    #6b4c9a,
+                    #6b4c9a 15px,
+                    #8b6bb7 15px,
+                    #8b6bb7 30px
+                ),
+                linear-gradient(135deg, #2d5016 0%, #6b4c9a 100%);
+            background-blend-mode: multiply;
+            color: #f5f1e8;
+            position: relative;
+        }
+
+        .card-front::before {
+            content: '☘';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #6b4c9a 0%, #d4af37 100%);
+            color: #f5f1e8;
+            transform: rotateY(180deg);
+            position: relative;
+        }
+
+        .card-back::before {
+            content: '🏔';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .card-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-align: center;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Georgia', serif;
+        }
+
+        .card-hint {
+            font-size: 0.9em;
+            margin-top: 20px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2d5016 0%, #3d6b1f 100%);
+            color: #f5f1e8;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3d6b1f 0%, #4d7b2f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #3d6b1f 0%, #4d8b2f 100%);
+            color: #f5f1e8;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #4d8b2f 0%, #5d9b3f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #d4af37 0%, #f4cf67 100%);
+            color: #2d5016;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #f4cf67 0%, #ffdf87 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b4c9a 0%, #8b6bb7 100%);
+            color: #f5f1e8;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #8b6bb7 0%, #ab8bd7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        }
+
+        .keyboard-hint {
+            text-align: center;
+            font-size: 0.85em;
+            color: #3d6b1f;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(109, 76, 154, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2d5016 0%, #6b4c9a 50%, #d4af37 100%);
+            transition: width 0.3s;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .completed-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completed-message h2 {
+            color: #3d6b1f;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.3);
+        }
+
+        .completed-message p {
+            color: #6b4c9a;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .typing-container {
+            margin-top: 20px;
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #d4af37;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 10px;
+            background: #f5f1e8;
+            color: #2d5016;
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+        }
+
+        .typing-input:focus {
+            outline: none;
+            border-color: #6b4c9a;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .typing-feedback {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 2px solid;
+        }
+
+        .typing-feedback.correct {
+            background: rgba(61, 107, 31, 0.2);
+            color: #2d5016;
+            border-color: #3d6b1f;
+        }
+
+        .typing-feedback.incorrect {
+            background: rgba(212, 175, 55, 0.2);
+            color: #6b4c9a;
+            border-color: #d4af37;
+        }
+
+        .settings-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(109, 76, 154, 0.1) 0%, rgba(45, 80, 22, 0.1) 100%);
+            border-radius: 8px;
+            font-size: 0.9em;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            color: #2d5016;
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #8b6bb7;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 2px solid #d4af37;
+        }
+
+        .toggle-switch.active {
+            background: #3d6b1f;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #f5f1e8;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scottish Gaelic Flashcards</h1>
+        <p class="subtitle">Foghlam Gàidhlig - Learn Gaelic</p>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="current-card">1</div>
+                <div class="stat-label">Current Card</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="total-cards">20</div>
+                <div class="stat-label">Total Cards</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="difficult-count">0</div>
+                <div class="stat-label">Review Pile</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="mode-selector">
+            <button class="btn-primary" onclick="app.setMode('gaelic-to-english')">Gàidhlig → English</button>
+            <button class="btn-secondary" onclick="app.setMode('english-to-gaelic')">English → Gàidhlig</button>
+        </div>
+
+        <div class="settings-toggle">
+            <span>Typing Mode:</span>
+            <div class="toggle-switch" id="typing-toggle" onclick="app.toggleTypingMode()">
+                <div class="toggle-slider"></div>
+            </div>
+            <span id="typing-status">OFF</span>
+        </div>
+
+        <div id="card-area">
+            <div class="card-container">
+                <div class="card" id="flashcard" onclick="app.flipCard()">
+                    <div class="card-face card-front">
+                        <div class="card-text" id="front-text">Loading...</div>
+                        <div class="card-hint">Click or press Space to flip</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-text" id="back-text">Ready?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-success" onclick="app.nextCard(true)">✓ Know It</button>
+                <button class="btn-warning" onclick="app.markDifficult()">⚠ Review Later</button>
+                <button class="btn-secondary" onclick="app.skipCard()">⏭ Skip</button>
+                <button class="btn-secondary" onclick="app.goBack()">← Back</button>
+            </div>
+
+            <div class="keyboard-hint">
+                ⌨️ Shortcuts: Space (flip) | K (know it) | R (review) | S (skip) | B (back)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Vocabulary database
+        const VOCABULARY = [
+            // Greetings & Common Phrases
+            { gaelic: "Halò", english: "Hello" },
+            { gaelic: "Tapadh leat", english: "Thank you" },
+            { gaelic: "Madainn mhath", english: "Good morning" },
+            { gaelic: "Feasgar math", english: "Good afternoon" },
+            { gaelic: "Oidhche mhath", english: "Good night" },
+            { gaelic: "Mar sin leat", english: "Goodbye" },
+            { gaelic: "Ciamar a tha thu?", english: "How are you?" },
+            { gaelic: "Tha gu math", english: "I'm fine" },
+            { gaelic: "Dè an t-ainm a th' ort?", english: "What's your name?" },
+            { gaelic: "Is mise...", english: "I am..." },
+            { gaelic: "Tha mi duilich", english: "I'm sorry" },
+            { gaelic: "Chan eil", english: "No / It's not" },
+            { gaelic: "Tha", english: "Yes / It is" },
+            { gaelic: "Slàinte mhath", english: "Cheers / Good health" },
+            { gaelic: "Ceart gu leòr", english: "Alright / Okay" },
+            { gaelic: "Tha mi sgìth", english: "I'm tired" },
+            { gaelic: "Tha an t-acras orm", english: "I'm hungry" },
+            { gaelic: "Tha am pathadh orm", english: "I'm thirsty" },
+            
+            // Food & Drink
+            { gaelic: "Uisge", english: "Water" },
+            { gaelic: "Bainne", english: "Milk" },
+            { gaelic: "Aran", english: "Bread" },
+            { gaelic: "Càise", english: "Cheese" },
+            { gaelic: "Im", english: "Butter" },
+            { gaelic: "Feòil", english: "Meat" },
+            { gaelic: "Iasg", english: "Fish" },
+            { gaelic: "Buntàta", english: "Potato" },
+            { gaelic: "Ubhal", english: "Apple" },
+            { gaelic: "Biadh", english: "Food" },
+            { gaelic: "Deoch", english: "Drink" },
+            { gaelic: "Teatha", english: "Tea" },
+            { gaelic: "Cofaidh", english: "Coffee" },
+            { gaelic: "Fìon", english: "Wine" },
+            { gaelic: "Leann", english: "Beer" },
+            { gaelic: "Siùcar", english: "Sugar" },
+            { gaelic: "Salann", english: "Salt" },
+            { gaelic: "Ugh", english: "Egg" },
+            { gaelic: "Feòil-mart", english: "Beef" },
+            { gaelic: "Muic-fheòil", english: "Pork" },
+            
+            // Animals
+            { gaelic: "Cù", english: "Dog" },
+            { gaelic: "Cat", english: "Cat" },
+            { gaelic: "Each", english: "Horse" },
+            { gaelic: "Bò", english: "Cow" },
+            { gaelic: "Caora", english: "Sheep" },
+            { gaelic: "Muc", english: "Pig" },
+            { gaelic: "Eun", english: "Bird" },
+            { gaelic: "Damh", english: "Stag / Ox" },
+            { gaelic: "Uan", english: "Lamb" },
+            { gaelic: "Cearc", english: "Hen" },
+            { gaelic: "Coileach", english: "Rooster" },
+            { gaelic: "Tunnag", english: "Duck" },
+            { gaelic: "Ròn", english: "Seal" },
+            { gaelic: "Madadh-allaidh", english: "Wolf" },
+            { gaelic: "Sionnach", english: "Fox" },
+            { gaelic: "Broc", english: "Badger" },
+            { gaelic: "Nathair", english: "Snake" },
+            { gaelic: "Iolaire", english: "Eagle" },
+            { gaelic: "Fitheach", english: "Raven" },
+            
+            // Family
+            { gaelic: "Màthair", english: "Mother" },
+            { gaelic: "Athair", english: "Father" },
+            { gaelic: "Bràthair", english: "Brother" },
+            { gaelic: "Piuthar", english: "Sister" },
+            { gaelic: "Mac", english: "Son" },
+            { gaelic: "Nighean", english: "Daughter" },
+            { gaelic: "Seanmhair", english: "Grandmother" },
+            { gaelic: "Seanair", english: "Grandfather" },
+            { gaelic: "Teaghlach", english: "Family" },
+            { gaelic: "Pàrantan", english: "Parents" },
+            
+            // House & Home
+            { gaelic: "Taigh", english: "House" },
+            { gaelic: "Seòmar", english: "Room" },
+            { gaelic: "Doras", english: "Door" },
+            { gaelic: "Uinneag", english: "Window" },
+            { gaelic: "Leabaidh", english: "Bed" },
+            { gaelic: "Cathair", english: "Chair" },
+            { gaelic: "Bòrd", english: "Table" },
+            { gaelic: "Cidsin", english: "Kitchen" },
+            { gaelic: "Seòmar-suidhe", english: "Living room" },
+            { gaelic: "Seòmar-cadail", english: "Bedroom" },
+            { gaelic: "Mullach", english: "Roof" },
+            { gaelic: "Làr", english: "Floor" },
+            { gaelic: "Balla", english: "Wall" },
+            
+            // Colors
+            { gaelic: "Dearg", english: "Red" },
+            { gaelic: "Gorm", english: "Blue" },
+            { gaelic: "Uaine", english: "Green" },
+            { gaelic: "Buidhe", english: "Yellow" },
+            { gaelic: "Dubh", english: "Black" },
+            { gaelic: "Geal", english: "White" },
+            { gaelic: "Liath", english: "Grey" },
+            { gaelic: "Donn", english: "Brown" },
+            { gaelic: "Orainds", english: "Orange" },
+            { gaelic: "Purpaidh", english: "Purple" },
+            { gaelic: "Pinc", english: "Pink" },
+            
+            // Numbers
+            { gaelic: "Aon", english: "One" },
+            { gaelic: "Dhà", english: "Two" },
+            { gaelic: "Trì", english: "Three" },
+            { gaelic: "Ceithir", english: "Four" },
+            { gaelic: "Còig", english: "Five" },
+            { gaelic: "Sia", english: "Six" },
+            { gaelic: "Seachd", english: "Seven" },
+            { gaelic: "Ochd", english: "Eight" },
+            { gaelic: "Naoi", english: "Nine" },
+            { gaelic: "Deich", english: "Ten" },
+            { gaelic: "Fichead", english: "Twenty" },
+            { gaelic: "Ceud", english: "Hundred" },
+            { gaelic: "Mìle", english: "Thousand" },
+            
+            // Days & Time
+            { gaelic: "Latha", english: "Day" },
+            { gaelic: "Oidhche", english: "Night" },
+            { gaelic: "Madainn", english: "Morning" },
+            { gaelic: "Feasgar", english: "Afternoon" },
+            { gaelic: "Seachdain", english: "Week" },
+            { gaelic: "Mìos", english: "Month" },
+            { gaelic: "Bliadhna", english: "Year" },
+            { gaelic: "Diluain", english: "Monday" },
+            { gaelic: "Dimàirt", english: "Tuesday" },
+            { gaelic: "Diciadain", english: "Wednesday" },
+            { gaelic: "Diardaoin", english: "Thursday" },
+            { gaelic: "Dihaoine", english: "Friday" },
+            { gaelic: "Disathairne", english: "Saturday" },
+            { gaelic: "Didòmhnaich", english: "Sunday" },
+            
+            // Weather & Nature
+            { gaelic: "Grìan", english: "Sun" },
+            { gaelic: "Gealach", english: "Moon" },
+            { gaelic: "Reul", english: "Star" },
+            { gaelic: "Adhar", english: "Sky" },
+            { gaelic: "Neul", english: "Cloud" },
+            { gaelic: "Uisge", english: "Rain" },
+            { gaelic: "Sneachda", english: "Snow" },
+            { gaelic: "Gaoth", english: "Wind" },
+            { gaelic: "Teine", english: "Fire" },
+            { gaelic: "Craobh", english: "Tree" },
+            { gaelic: "Coille", english: "Forest" },
+            { gaelic: "Beinn", english: "Mountain" },
+            { gaelic: "Abhainn", english: "River" },
+            { gaelic: "Loch", english: "Lake" },
+            { gaelic: "Muir", english: "Sea" },
+            { gaelic: "Tràigh", english: "Beach" },
+            { gaelic: "Dìthean", english: "Flower" },
+            { gaelic: "Feur", english: "Grass" },
+            { gaelic: "Fraoch", english: "Heather" },
+            { gaelic: "Duilleag", english: "Leaf" },
+            { gaelic: "Cnoc", english: "Hill" },
+            { gaelic: "Gleann", english: "Glen / Valley" },
+            { gaelic: "Creag", english: "Rock / Cliff" },
+            
+            // Body Parts
+            { gaelic: "Ceann", english: "Head" },
+            { gaelic: "Sùil", english: "Eye" },
+            { gaelic: "Cluas", english: "Ear" },
+            { gaelic: "Sròn", english: "Nose" },
+            { gaelic: "Beul", english: "Mouth" },
+            { gaelic: "Teanga", english: "Tongue" },
+            { gaelic: "Làmh", english: "Hand" },
+            { gaelic: "Cas", english: "Foot / Leg" },
+            { gaelic: "Cridhe", english: "Heart" },
+            { gaelic: "Fiacail", english: "Tooth" },
+            { gaelic: "Druim", english: "Back" },
+            { gaelic: "Amhach", english: "Neck" },
+            { gaelic: "Corrag", english: "Finger" },
+            
+            // Adjectives
+            { gaelic: "Mòr", english: "Big / Great" },
+            { gaelic: "Beag", english: "Small" },
+            { gaelic: "Àrd", english: "High / Tall" },
+            { gaelic: "Ìosal", english: "Low" },
+            { gaelic: "Math", english: "Good" },
+            { gaelic: "Dona", english: "Bad" },
+            { gaelic: "Brèagha", english: "Beautiful" },
+            { gaelic: "Granda", english: "Ugly" },
+            { gaelic: "Òg", english: "Young" },
+            { gaelic: "Sean", english: "Old" },
+            { gaelic: "Ùr", english: "New" },
+            { gaelic: "Teth", english: "Hot" },
+            { gaelic: "Fuar", english: "Cold" },
+            { gaelic: "Blàth", english: "Warm" },
+            { gaelic: "Fliuch", english: "Wet" },
+            { gaelic: "Tioram", english: "Dry" },
+            { gaelic: "Luath", english: "Fast / Quick" },
+            { gaelic: "Slaodach", english: "Slow" },
+            { gaelic: "Làidir", english: "Strong" },
+            { gaelic: "Lag", english: "Weak" },
+            { gaelic: "Sona", english: "Happy" },
+            { gaelic: "Brònach", english: "Sad" },
+            { gaelic: "Tiugh", english: "Thick / Fat" },
+            { gaelic: "Caol", english: "Thin / Narrow" },
+            { gaelic: "Fada", english: "Long" },
+            { gaelic: "Goirid", english: "Short" },
+            { gaelic: "Glan", english: "Clean" },
+            { gaelic: "Salach", english: "Dirty" },
+            
+            // Verbs
+            { gaelic: "Bi", english: "Be" },
+            { gaelic: "Dèan", english: "Do / Make" },
+            { gaelic: "Thig", english: "Come" },
+            { gaelic: "Falbh", english: "Go / Leave" },
+            { gaelic: "Faigh", english: "Get / Find" },
+            { gaelic: "Thoir", english: "Give" },
+            { gaelic: "Abair", english: "Say" },
+            { gaelic: "Cluinn", english: "Hear" },
+            { gaelic: "Faic", english: "See" },
+            { gaelic: "Ith", english: "Eat" },
+            { gaelic: "Òl", english: "Drink" },
+            { gaelic: "Caidil", english: "Sleep" },
+            { gaelic: "Dùisg", english: "Wake" },
+            { gaelic: "Ruith", english: "Run" },
+            { gaelic: "Coiseachd", english: "Walk" },
+            { gaelic: "Seas", english: "Stand" },
+            { gaelic: "Suidh", english: "Sit" },
+            { gaelic: "Leugh", english: "Read" },
+            { gaelic: "Sgrìobh", english: "Write" },
+            { gaelic: "Bruidhinn", english: "Speak" },
+            { gaelic: "Cluich", english: "Play" },
+            { gaelic: "Seinn", english: "Sing" },
+            { gaelic: "Danns", english: "Dance" },
+            { gaelic: "Gàir", english: "Laugh" },
+            { gaelic: "Tuig", english: "Understand" },
+            { gaelic: "Ionnsaich", english: "Learn" },
+            { gaelic: "Teagaisg", english: "Teach" },
+            { gaelic: "Cuimhnich", english: "Remember" },
+            
+            // Places
+            { gaelic: "Baile", english: "Town / Village" },
+            { gaelic: "Dùthaich", english: "Country" },
+            { gaelic: "Eilean", english: "Island" },
+            { gaelic: "Eaglais", english: "Church" },
+            { gaelic: "Sgoil", english: "School" },
+            { gaelic: "Bùth", english: "Shop" },
+            { gaelic: "Oifis", english: "Office" },
+            { gaelic: "Ospadal", english: "Hospital" },
+            { gaelic: "Taigh-òsta", english: "Hotel" },
+            { gaelic: "Taigh-seinnse", english: "Pub" },
+            { gaelic: "Pàirc", english: "Park / Field" },
+            { gaelic: "Rathad", english: "Road" },
+            { gaelic: "Sràid", english: "Street" },
+            { gaelic: "Drochaid", english: "Bridge" },
+            
+            // Clothing
+            { gaelic: "Aodach", english: "Clothes" },
+            { gaelic: "Lèine", english: "Shirt" },
+            { gaelic: "Briogais", english: "Trousers" },
+            { gaelic: "Còta", english: "Coat" },
+            { gaelic: "Ad", english: "Hat" },
+            { gaelic: "Brògan", english: "Shoes" },
+            { gaelic: "Stocainnean", english: "Socks" },
+            { gaelic: "Fèileadh", english: "Kilt" },
+            
+            // Objects
+            { gaelic: "Leabhar", english: "Book" },
+            { gaelic: "Peann", english: "Pen" },
+            { gaelic: "Pàipear", english: "Paper" },
+            { gaelic: "Airgead", english: "Money / Silver" },
+            { gaelic: "Òr", english: "Gold" },
+            { gaelic: "Clach", english: "Stone" },
+            { gaelic: "Iarunn", english: "Iron" },
+            { gaelic: "Fiodh", english: "Wood" },
+            { gaelic: "Glainne", english: "Glass" },
+            { gaelic: "Cupa", english: "Cup" },
+            { gaelic: "Truinnsear", english: "Plate" },
+            { gaelic: "Spàin", english: "Spoon" },
+            { gaelic: "Sgian", english: "Knife" },
+            { gaelic: "Forc", english: "Fork" },
+            
+            // Culture & Music
+            { gaelic: "Ceòl", english: "Music" },
+            { gaelic: "Òran", english: "Song" },
+            { gaelic: "Pìob", english: "Pipe / Bagpipe" },
+            { gaelic: "Dannsa", english: "Dance" },
+            { gaelic: "Sgeulachd", english: "Story" },
+            { gaelic: "Bàrd", english: "Poet" },
+            { gaelic: "Facal", english: "Word" },
+            { gaelic: "Cànan", english: "Language" },
+            { gaelic: "Cèilidh", english: "Social gathering" },
+            
+            // Abstract Concepts
+            { gaelic: "Gaol", english: "Love" },
+            { gaelic: "Fuath", english: "Hate" },
+            { gaelic: "Beatha", english: "Life" },
+            { gaelic: "Bàs", english: "Death" },
+            { gaelic: "Saorsa", english: "Freedom" },
+            { gaelic: "Sìth", english: "Peace" },
+            { gaelic: "Cogadh", english: "War" },
+            { gaelic: "Fìrinn", english: "Truth" },
+            { gaelic: "Breug", english: "Lie" },
+            { gaelic: "Eòlas", english: "Knowledge" },
+            { gaelic: "Misneachd", english: "Courage" },
+            { gaelic: "Eagal", english: "Fear" },
+            { gaelic: "Dòchas", english: "Hope" },
+            { gaelic: "Earbsa", english: "Trust" },
+            { gaelic: "Foighidinn", english: "Patience" },
+            { gaelic: "Fearg", english: "Anger" },
+            { gaelic: "Aoibhneas", english: "Joy" },
+            { gaelic: "Bròn", english: "Sorrow" },
+            { gaelic: "Gliocas", english: "Wisdom" },
+            { gaelic: "Onair", english: "Honor" },
+            { gaelic: "Nàire", english: "Shame" },
+            { gaelic: "Urram", english: "Respect / Honor" },
+            
+            // Questions & Common Words
+            { gaelic: "Dè?", english: "What?" },
+            { gaelic: "Cò?", english: "Who?" },
+            { gaelic: "Càit?", english: "Where?" },
+            { gaelic: "Cuin?", english: "When?" },
+            { gaelic: "Carson?", english: "Why?" },
+            { gaelic: "Ciamar?", english: "How?" },
+            { gaelic: "Agus", english: "And" },
+            { gaelic: "Ach", english: "But" },
+            { gaelic: "No", english: "Or" },
+            { gaelic: "Ann", english: "In / There" },
+            { gaelic: "Air", english: "On" },
+            { gaelic: "Le", english: "With" },
+            { gaelic: "Gu", english: "To" },
+            { gaelic: "Bho", english: "From" },
+            { gaelic: "Mu", english: "About" },
+            
+            // More Phrases
+            { gaelic: "Tha mi a' tuigsinn", english: "I understand" },
+            { gaelic: "Chan eil mi a' tuigsinn", english: "I don't understand" },
+            { gaelic: "Bruidhinn nas slaodaiche", english: "Speak slower" },
+            { gaelic: "Cò às a tha thu?", english: "Where are you from?" },
+            { gaelic: "Tha mi às...", english: "I'm from..." },
+            { gaelic: "A bheil Gàidhlig agad?", english: "Do you speak Gaelic?" },
+            { gaelic: "Tha beagan", english: "A little" },
+            { gaelic: "Glè mhath", english: "Very good" },
+            { gaelic: "Tapadh leibh", english: "Thank you (formal)" },
+            { gaelic: "'S e do bheatha", english: "You're welcome" },
+            { gaelic: "Gun robh math agad", english: "Well done" },
+            { gaelic: "Tha sin math", english: "That's good" },
+            { gaelic: "Tha e fuar an-diugh", english: "It's cold today" },
+            { gaelic: "Tha e blàth an-diugh", english: "It's warm today" },
+            { gaelic: "Dè an uair a tha e?", english: "What time is it?" },
+            { gaelic: "Càit a bheil...?", english: "Where is...?" },
+            { gaelic: "Tha mi a' dol dhachaigh", english: "I'm going home" },
+            { gaelic: "Tha mi toilichte", english: "I'm happy" },
+            { gaelic: "Tha mi trang", english: "I'm busy" },
+            { gaelic: "Tha gaol agam ort", english: "I love you" },
+            { gaelic: "Chan eil dad", english: "Nothing" },
+            
+            // More Vocabulary
+            { gaelic: "Duine", english: "Person / Man" },
+            { gaelic: "Boireannach", english: "Woman" },
+            { gaelic: "Balach", english: "Boy" },
+            { gaelic: "Caileag", english: "Girl" },
+            { gaelic: "Pàiste", english: "Child" },
+            { gaelic: "Caraid", english: "Friend" },
+            { gaelic: "Nàmhaid", english: "Enemy" },
+            { gaelic: "Rìgh", english: "King" },
+            { gaelic: "Ban-rìgh", english: "Queen" },
+            { gaelic: "Claidheamh", english: "Sword" },
+            { gaelic: "Saighdear", english: "Soldier" },
+            { gaelic: "Dotair", english: "Doctor" },
+            { gaelic: "Tidsear", english: "Teacher" },
+            { gaelic: "Iasgair", english: "Fisherman" },
+            { gaelic: "Tuathanach", english: "Farmer" },
+            { gaelic: "Gàrradh", english: "Garden" },
+            { gaelic: "Achadh", english: "Field" },
+            { gaelic: "Toll", english: "Hole" },
+            { gaelic: "Slighe", english: "Path / Way" },
+            { gaelic: "Deireadh", english: "End" },
+            { gaelic: "Toiseach", english: "Beginning" },
+            { gaelic: "Meadhan", english: "Middle" },
+            { gaelic: "Barr", english: "Top / Summit" },
+            { gaelic: "Bun", english: "Bottom / Base" },
+            { gaelic: "Taobh", english: "Side" },
+            { gaelic: "Tìr", english: "Land / Country" },
+            { gaelic: "Talamh", english: "Earth / Ground" },
+            { gaelic: "Speur", english: "Sky / Heaven" },
+            { gaelic: "Dia", english: "God" },
+            { gaelic: "Buaidh", english: "Victory" },
+            { gaelic: "Call", english: "Loss" },
+            { gaelic: "Neart", english: "Strength / Power" },
+            { gaelic: "Laigse", english: "Weakness" },
+            { gaelic: "Rud", english: "Thing" },
+            { gaelic: "Nì", english: "Thing / Object" },
+            { gaelic: "Cumhachd", english: "Power" },
+            { gaelic: "Rìoghachd", english: "Kingdom" },
+            { gaelic: "Cinneadh", english: "Clan / Nation" },
+            { gaelic: "Obair", english: "Work" },
+            { gaelic: "Saothair", english: "Labor / Toil" },
+            { gaelic: "Fois", english: "Rest" },
+            { gaelic: "Cadal", english: "Sleep" },
+            { gaelic: "Aisling", english: "Dream / Vision" },
+            { gaelic: "Bruadar", english: "Dream" },
+            { gaelic: "Geall", english: "Promise / Wager" },
+            { gaelic: "Bòid", english: "Vow / Oath" },
+            { gaelic: "Coibhneas", english: "Kindness" },
+            { gaelic: "Caoimhneas", english: "Gentleness" },
+            { gaelic: "Tròcair", english: "Mercy" },
+            { gaelic: "Cruadal", english: "Hardship" },
+            { gaelic: "Trioblaid", english: "Trouble" },
+            { gaelic: "Sòlas", english: "Comfort / Joy" },
+            { gaelic: "Aoigh", english: "Guest" },
+            { gaelic: "Aoigheachd", english: "Hospitality" },
+            { gaelic: "Càl", english: "Cabbage / Kale" },
+            { gaelic: "Curran", english: "Carrot" },
+            { gaelic: "Min", english: "Meal / Flour" },
+            { gaelic: "Eòrna", english: "Barley" },
+            { gaelic: "Coirce", english: "Oats" },
+            { gaelic: "Cruithneachd", english: "Wheat" },
+            { gaelic: "Mil", english: "Honey" },
+            { gaelic: "Uair", english: "Hour / Time" },
+            { gaelic: "Mionaid", english: "Minute" },
+            { gaelic: "Àite", english: "Place" },
+            { gaelic: "Am", english: "Time" },
+            { gaelic: "Tìde", english: "Time" }
+        ];
+
+        // Main app object
+        const app = {
+            currentIndex: 0,
+            isFlipped: false,
+            difficultCards: [],
+            mode: 'gaelic-to-english',
+            currentDeck: [],
+            knownCards: new Set(),
+            typingMode: false,
+
+            init() {
+                this.currentDeck = this.getRandomWords(20);
+                this.updateModeButtons();
+                this.showCard();
+                this.setupKeyboardShortcuts();
+            },
+
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            },
+
+            getRandomWords(count = 20) {
+                const shuffled = this.shuffleArray(VOCABULARY);
+                return shuffled.slice(0, count);
+            },
+
+            setMode(newMode) {
+                this.mode = newMode;
+                this.currentIndex = 0;
+                this.currentDeck = this.getRandomWords(20);
+                this.difficultCards = [];
+                this.knownCards.clear();
+                this.updateModeButtons();
+                this.showCard();
+            },
+
+            updateModeButtons() {
+                const buttons = document.querySelectorAll('.mode-selector button');
+                buttons.forEach(btn => {
+                    if ((this.mode === 'gaelic-to-english' && btn.textContent.includes('Gàidhlig →')) ||
+                        (this.mode === 'english-to-gaelic' && btn.textContent.includes('English →'))) {
+                        btn.className = 'btn-primary';
+                    } else {
+                        btn.className = 'btn-secondary';
+                    }
+                });
+            },
+
+            toggleTypingMode() {
+                this.typingMode = !this.typingMode;
+                const toggle = document.getElementById('typing-toggle');
+                const status = document.getElementById('typing-status');
+                
+                if (this.typingMode) {
+                    toggle.classList.add('active');
+                    status.textContent = 'ON';
+                } else {
+                    toggle.classList.remove('active');
+                    status.textContent = 'OFF';
+                }
+                
+                this.showCard();
+            },
+
+            showCard() {
+                if (this.currentIndex >= this.currentDeck.length) {
+                    this.showCompletedMessage();
+                    return;
+                }
+
+                const card = this.currentDeck[this.currentIndex];
+                const frontText = this.mode === 'gaelic-to-english' ? card.gaelic : card.english;
+                const backText = this.mode === 'gaelic-to-english' ? card.english : card.gaelic;
+
+                const cardContainer = document.querySelector('.card-container');
+                
+                if (this.typingMode) {
+                    cardContainer.innerHTML = `
+                        <div class="card-face card-front" style="position: static; transform: none; backface-visibility: visible;">
+                            <div class="card-text">${frontText}</div>
+                            <div class="card-hint">Type the translation below</div>
+                        </div>
+                        <div class="typing-container">
+                            <input type="text" 
+                                   class="typing-input" 
+                                   id="typing-answer" 
+                                   placeholder="Type your answer..."
+                                   autocomplete="off"
+                                   autofocus>
+                            <div class="typing-feedback" id="typing-feedback" style="display: none;"></div>
+                        </div>
+                    `;
+                    
+                    const input = document.getElementById('typing-answer');
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.checkTypedAnswer(backText);
+                        }
+                    });
+                } else {
+                    cardContainer.innerHTML = `
+                        <div class="card" id="flashcard" onclick="app.flipCard()">
+                            <div class="card-face card-front">
+                                <div class="card-text">${frontText}</div>
+                                <div class="card-hint">Click or press Space to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-text">${backText}</div>
+                            </div>
+                        </div>
+                    `;
+                    this.isFlipped = false;
+                }
+
+                document.getElementById('current-card').textContent = this.currentIndex + 1;
+                document.getElementById('total-cards').textContent = this.currentDeck.length;
+                document.getElementById('difficult-count').textContent = this.difficultCards.length;
+                
+                this.updateProgress();
+            },
+
+            checkTypedAnswer(correctAnswer) {
+                const input = document.getElementById('typing-answer');
+                const feedback = document.getElementById('typing-feedback');
+                const userAnswer = input.value.trim().toLowerCase();
+                const correct = correctAnswer.toLowerCase();
+                
+                feedback.style.display = 'block';
+                
+                if (userAnswer === correct) {
+                    feedback.className = 'typing-feedback correct';
+                    feedback.textContent = '✓ Correct! ' + correctAnswer;
+                    setTimeout(() => this.nextCard(true), 1500);
+                } else {
+                    feedback.className = 'typing-feedback incorrect';
+                    feedback.textContent = '✗ Incorrect. Correct answer: ' + correctAnswer;
+                    input.value = '';
+                    input.focus();
+                }
+            },
+
+            updateProgress() {
+                const progress = ((this.currentIndex) / this.currentDeck.length) * 100;
+                document.getElementById('progress').style.width = progress + '%';
+            },
+
+            flipCard() {
+                const card = document.getElementById('flashcard');
+                if (card) {
+                    card.classList.toggle('flipped');
+                    this.isFlipped = !this.isFlipped;
+                }
+            },
+
+            nextCard(known = false) {
+                if (known) {
+                    this.knownCards.add(this.currentIndex);
+                }
+                
+                this.currentIndex++;
+                this.showCard();
+            },
+
+            skipCard() {
+                const skipped = this.currentDeck[this.currentIndex];
+                this.currentDeck.push(skipped);
+                this.currentIndex++;
+                this.showCard();
+            },
+
+            goBack() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.showCard();
+                }
+            },
+
+            markDifficult() {
+                const card = this.currentDeck[this.currentIndex];
+                if (!this.difficultCards.includes(card)) {
+                    this.difficultCards.push(card);
+                }
+                this.nextCard();
+            },
+
+            showCompletedMessage() {
+                const cardArea = document.getElementById('card-area');
+                cardArea.innerHTML = `
+                    <div class="completed-message">
+                        <h2>🎉 Excellent Work!</h2>
+                        <p>You've completed all ${this.currentDeck.length} cards!</p>
+                        <p><strong>${this.knownCards.size}</strong> cards marked as known</p>
+                        <p><strong>${this.difficultCards.length}</strong> cards in review pile</p>
+                        <div class="controls">
+                            ${this.difficultCards.length > 0 ? 
+                                '<button class="btn-warning" onclick="app.reviewDifficult()">📚 Review Difficult Cards</button>' : ''}
+                            <button class="btn-primary" onclick="app.restart()">🔄 Start Over</button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            reviewDifficult() {
+                this.currentDeck = this.shuffleArray(this.difficultCards);
+                this.difficultCards = [];
+                this.currentIndex = 0;
+                this.knownCards.clear();
+                this.resetCardArea();
+                this.showCard();
+            },
+
+            restart() {
+                this.currentDeck = this.getRandomWords(20);
+                this.currentIndex = 0;
+                this.difficultCards = [];
+                this.knownCards.clear();
+                this.resetCardArea();
+                this.showCard();
+            },
+
+            resetCardArea() {
+                const cardArea = document.getElementById('card-area');
+                cardArea.innerHTML = `
+                    <div class="card-container">
+                        <div class="card" id="flashcard" onclick="app.flipCard()">
+                            <div class="card-face card-front">
+                                <div class="card-text" id="front-text">Loading...</div>
+                                <div class="card-hint">Click or press Space to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-text" id="back-text">Ready?</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn-success" onclick="app.nextCard(true)">✓ Know It</button>
+                        <button class="btn-warning" onclick="app.markDifficult()">⚠ Review Later</button>
+                        <button class="btn-secondary" onclick="app.skipCard()">⏭ Skip</button>
+                        <button class="btn-secondary" onclick="app.goBack()">← Back</button>
+                    </div>
+                    <div class="keyboard-hint">
+                        ⌨️ Shortcuts: Space (flip) | K (know it) | R (review) | S (skip) | B (back)
+                    </div>
+                `;
+            },
+
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (e) => {
+                    if (this.currentIndex >= this.currentDeck.length) return;
+                    
+                    if (this.typingMode && e.target.tagName === 'INPUT') {
+                        return;
+                    }
+                    
+                    switch(e.key.toLowerCase()) {
+                        case ' ':
+                            e.preventDefault();
+                            if (!this.typingMode) this.flipCard();
+                            break;
+                        case 'k':
+                            this.nextCard(true);
+                            break;
+                        case 'r':
+                            this.markDifficult();
+                            break;
+                        case 's':
+                            this.skipCard();
+                            break;
+                        case 'b':
+                            this.goBack();
+                            break;
+                    }
+                });
+            }
+        };
+
+        // Initialize the app when the page loads
+        app.init();
+    </script>
+</body>
+</html>
